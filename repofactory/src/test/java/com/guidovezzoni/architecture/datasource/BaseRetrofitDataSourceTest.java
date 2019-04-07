@@ -3,9 +3,9 @@ package com.guidovezzoni.architecture.datasource;
 import org.junit.Before;
 import org.junit.Test;
 
-public class BaseNetworkDataSourceTest {
+public class BaseRetrofitDataSourceTest {
 
-    private BaseNetworkDataSource<String, Void> sut;
+    private BaseRetrofitDataSource<String, Void> sut;
 
     @Before
     public void setUp() throws Exception {

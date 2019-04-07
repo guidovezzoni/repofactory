@@ -6,11 +6,11 @@ import io.reactivex.annotations.NonNull;
 import kotlin.jvm.functions.Function1;
 import retrofit2.Response;
 
-public class NetworkFuncDataSource<M, P> extends BaseNetworkDataSource<M, P> {
+public class RetrofitFunctionDataSource<M, P> extends BaseRetrofitDataSource<M, P> {
     @NonNull
     private final Function1<P, Single<Response<M>>> endPointGet;
 
-    public NetworkFuncDataSource(@NonNull Function1<P, Single<Response<M>>> endPointGet) {
+    public RetrofitFunctionDataSource(@NonNull Function1<P, Single<Response<M>>> endPointGet) {
         Preconditions.checkNotNull(endPointGet);
         this.endPointGet = endPointGet;
     }

@@ -3,7 +3,7 @@ package com.guidovezzoni.repofactory;
 import com.guidovezzoni.architecture.cache.CacheHelper;
 import com.guidovezzoni.architecture.datasource.CachedDataSource;
 import com.guidovezzoni.architecture.datasource.DataSource;
-import com.guidovezzoni.architecture.datasource.NetworkFuncDataSource;
+import com.guidovezzoni.architecture.datasource.RetrofitFunctionDataSource;
 import com.guidovezzoni.architecture.repository.NoCacheRepository;
 import com.guidovezzoni.architecture.repository.Repository;
 import com.guidovezzoni.architecture.repository.SingleLevelCacheRepository;
@@ -15,7 +15,7 @@ import retrofit2.Response;
 @SuppressWarnings({"WeakerAccess", "unused"})
 public class RepoFactory {
     protected <M, P> DataSource<M, P> createNetworkDataSource(@NonNull Function1<P, Single<Response<M>>> endPointGet) {
-        return new NetworkFuncDataSource<>(endPointGet);
+        return new RetrofitFunctionDataSource<>(endPointGet);
     }
 
     protected <M, P> CachedDataSource<M, P> createCachedSource() {

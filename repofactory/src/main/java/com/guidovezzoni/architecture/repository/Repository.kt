@@ -3,19 +3,25 @@ package com.guidovezzoni.architecture.repository
 import io.reactivex.Single
 
 /**
- * Interface for the repository pattern
+ * Provides an Interface for accessing values provided by the repository pattern
  *
- * @param M data model
- * @param P parameters required for obtaining the appropriate
+ * @param M data model type
+ * @param P parameters type
  */
 interface Repository<M, P> {
+    /**
+     * returns the data from cache (if valid) or from the original source
+     *
+     * @param params parameters required for the request
+     * @return a [Single] that emits the requested value
+     */
     fun get(params: P?): Single<M>
 
     /**
-     * always get the latest network info, no cache involved
+     * always returns the latest original source, no cache involved
      *
-     * @param params parameters required for obtaining the appropriate data
-     * @return the data model from the network
+     * @param params parameters required for the request
+     * @return a [Single] that emits the requested value
      */
     fun getLatest(params: P?): Single<M>
 }

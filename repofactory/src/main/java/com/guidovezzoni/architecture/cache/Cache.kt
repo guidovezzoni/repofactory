@@ -3,7 +3,7 @@ package com.guidovezzoni.architecture.cache
 /**
  * Adds some method to handle cache
  *
- * Possible features:
+ * Possible additional features:
  * - restore validity
  * - non-expirable cache
  */

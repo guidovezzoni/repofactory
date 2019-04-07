@@ -15,7 +15,7 @@ import retrofit2.Response;
  * @param <M> data model
  * @param <P> parameters required for obtaining the appropriate data
  */
-public abstract class BaseNetworkDataSource<M, P> implements DataSource<M, P> {
+public abstract class BaseRetrofitDataSource<M, P> implements DataSource<M, P> {
 
     /**
      * this need to be implemented for the specific network call
