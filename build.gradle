@@ -26,3 +26,31 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+ext {
+    // SDK versions
+    MIN_SDK_VERSION = 14
+    TARGET_SDK_VERSION = 28
+    ANDROID_COMPILE_SDK_VERSION = 28
+
+    // androidX
+    ANDROIDX_LIFECYCLE_VERSION = '2.0.0'
+
+    // retrofit
+    RETROFIT_VERSION = "2.2.0"
+    OK_HTTP_LOGGING_INTERCEPTOR = '3.5.0'
+
+    // rx
+    RX_JAVA_VERSION = "2.1.0"
+    RX_ANDROID_VERSION = "2.1.0"
+
+    // other 3rd party
+    ARROW_VERSION = '1.0.0'
+
+    // test
+    JUNIT_VERSION = '4.12'
+    MOCKITO_VERSION = '2.13.0'
+    ASSERTJ_VERSION = '3.6.2'
+    ANDROIDX_TESTRUNNER_VERSION = '1.1.0'
+    ANDROIDX_ESPRESSO_VERSION = '3.1.0'
+}
