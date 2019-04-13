@@ -1,6 +1,7 @@
 package com.guidovezzoni.architecture.datasource;
 
 
+import com.guidovezzoni.architecture.cacheddatasource.CachedDataSource;
 import com.guidovezzoni.model.TimeStampedData;
 import com.guidovezzoni.utils.RxUtils;
 import io.reactivex.Maybe;
@@ -18,9 +19,9 @@ import retrofit2.Response;
 public abstract class BaseRetrofitDataSource<M, P> implements DataSource<M, P> {
 
     /**
-     * this need to be implemented for the specific network call
+     * this needs to be implemented for a specific network call
      *
-     * @param params parameters required for obtaining the appropriate data
+     * @param params parameters required for the network request
      * @return retrofit response
      */
     protected abstract Single<Response<M>> getFromEndPoint(P params);
@@ -36,13 +37,8 @@ public abstract class BaseRetrofitDataSource<M, P> implements DataSource<M, P> {
 
     @NotNull
     @Override
-    public Maybe<TimeStampedData<M>> getAndUpdate(P params, @NotNull DataSource<M, P> cacheSource) {
+    public Maybe<TimeStampedData<M>> getAndUpdate(P params, @NotNull CachedDataSource<M, P> cacheSource) {
         return get(params)
                 .doAfterSuccess(cacheSource::set);
-    }
-
-    @Override
-    public void set(@NotNull TimeStampedData<M> model) {
-        //TODO complete
     }
 }

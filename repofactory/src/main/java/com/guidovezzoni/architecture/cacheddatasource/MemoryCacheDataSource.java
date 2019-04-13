@@ -1,7 +1,6 @@
-package com.guidovezzoni.architecture.datasource;
+package com.guidovezzoni.architecture.cacheddatasource;
 
 import com.fernandocejas.arrow.checks.Preconditions;
-import com.guidovezzoni.architecture.cache.Cache;
 import com.guidovezzoni.architecture.cache.CacheHelper;
 import com.guidovezzoni.model.TimeStampedData;
 import io.reactivex.Maybe;
@@ -9,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.TimeUnit;
 
-public class CachedDataSource<M, P> implements DataSource<M, P>, Cache {
+public class MemoryCacheDataSource<M, P> implements CachedDataSource<M, P> {
     private static final long DEFAULT_CACHE_VALIDITY = TimeUnit.MINUTES.toMillis(5);
 
     private TimeStampedData<M> cachedValue;
@@ -17,24 +16,28 @@ public class CachedDataSource<M, P> implements DataSource<M, P>, Cache {
     private final CacheHelper cacheHelper;
     private long cacheValidity;
 
-    public CachedDataSource(CacheHelper cacheHelper) {
+    public MemoryCacheDataSource(CacheHelper cacheHelper) {
         this.cacheHelper = cacheHelper;
         cacheValidity = DEFAULT_CACHE_VALIDITY;
         invalidateCache();
     }
 
+    /**
+     * @implNote params is currently ignored
+     */
     @NotNull
     @Override
     public Maybe<TimeStampedData<M>> get(P params) {
-        //TODO params is currently ignored
         Preconditions.checkArgument(params == null, "Params must be NULL");
         return isCacheValid() ? Maybe.just(cachedValue) : Maybe.empty();
     }
 
+    /**
+     * @implNote params is currently ignored
+     */
     @NotNull
     @Override
-    public Maybe<TimeStampedData<M>> getAndUpdate(P params, @NotNull DataSource<M, P> cacheSource) {
-        //TODO params is currently ignored
+    public Maybe<TimeStampedData<M>> getAndUpdate(P params, @NotNull CachedDataSource<M, P> cacheSource) {
         Preconditions.checkArgument(params == null, "Params must be NULL");
         if (isCacheValid()) {
             cacheSource.set(cachedValue);

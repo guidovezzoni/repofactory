@@ -1,6 +1,6 @@
 package com.guidovezzoni.architecture.repository;
 
-import com.guidovezzoni.architecture.datasource.CachedDataSource;
+import com.guidovezzoni.architecture.cacheddatasource.MemoryCacheDataSource;
 import com.guidovezzoni.architecture.datasource.DataSource;
 import com.guidovezzoni.model.TimeStampedData;
 import io.reactivex.Maybe;
@@ -22,7 +22,7 @@ public class SingleLevelCacheRepositoryTest {
     @Mock
     private DataSource<String, Void> networkDataSource;
     @Mock
-    private CachedDataSource<String, Void> cacheDataSource;
+    private MemoryCacheDataSource<String, Void> cacheDataSource;
 
     private SingleLevelCacheRepository<String, Void> sut;
 

@@ -1,7 +1,7 @@
 package com.guidovezzoni.repofactory;
 
 import com.guidovezzoni.architecture.cache.CacheHelper;
-import com.guidovezzoni.architecture.datasource.CachedDataSource;
+import com.guidovezzoni.architecture.cacheddatasource.MemoryCacheDataSource;
 import com.guidovezzoni.architecture.datasource.DataSource;
 import com.guidovezzoni.architecture.datasource.RetrofitFunctionDataSource;
 import com.guidovezzoni.architecture.repository.NoCacheRepository;
@@ -18,8 +18,8 @@ public class RepoFactory {
         return new RetrofitFunctionDataSource<>(endPointGet);
     }
 
-    protected <M, P> CachedDataSource<M, P> createCachedSource() {
-        return new CachedDataSource<>(new CacheHelper(System::currentTimeMillis));
+    protected <M, P> MemoryCacheDataSource<M, P> createCachedSource() {
+        return new MemoryCacheDataSource<>(new CacheHelper(System::currentTimeMillis));
     }
 
     public <M, P> Repository<M, P> createRepo(RepoType repoType, @NonNull Function1<P, Single<Response<M>>> endPointGet) {
@@ -29,7 +29,7 @@ public class RepoFactory {
             case NO_CACHE:
                 return new NoCacheRepository<>(networkSource);
             case SINGLE_CACHE:
-                CachedDataSource<M, P> cachedDataSource = createCachedSource();
+                MemoryCacheDataSource<M, P> cachedDataSource = createCachedSource();
                 return new SingleLevelCacheRepository<>(networkSource, cachedDataSource);
             default:
                 throw new IllegalArgumentException("repo type not defined");

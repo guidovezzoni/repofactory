@@ -1,5 +1,6 @@
 package com.guidovezzoni.architecture.datasource
 
+import com.guidovezzoni.architecture.cacheddatasource.CachedDataSource
 import com.guidovezzoni.model.TimeStampedData
 import io.reactivex.Maybe
 
@@ -23,10 +24,8 @@ interface DataSource<M, P> {
      * this is supposed to be called when we need to updated a cache after a successful emission
      *
      * @param params parameters required for the request
-     * @param anotherSource a [DataSource] representing the cache that needs updating
+     * @param anotherSource a [CachedDataSource] representing the cache that needs updating
      * @return a [Maybe] that emits the requested value if present, wrapped in [TimeStampedData]
      */
-    fun getAndUpdate(params: P?, anotherSource: DataSource<M, P>): Maybe<TimeStampedData<M>>
-
-    fun set(model: TimeStampedData<M>)
+    fun getAndUpdate(params: P?, anotherSource: CachedDataSource<M, P>): Maybe<TimeStampedData<M>>
 }
