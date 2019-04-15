@@ -18,6 +18,7 @@ import static org.mockito.Mockito.*;
 public class SingleLevelCacheRepositoryTest {
     private static final String NETWORK_STRING = "Network";
     private static final String CACHE_STRING = "Cache";
+    private static final Long TIMESTAMP = 47L;
 
     @Mock
     private DataSource<String, Void> networkDataSource;
@@ -34,8 +35,8 @@ public class SingleLevelCacheRepositoryTest {
     @Test
     public void whenGetWithCacheAvailableThenReturnCache() {
         TestObserver<String> testObserver = TestObserver.create();
-        when(cacheDataSource.get(null)).thenReturn(Maybe.just(TimeStampedData.Companion.of(CACHE_STRING)));
-        when(networkDataSource.getAndUpdate(null, cacheDataSource)).thenReturn(Maybe.just(TimeStampedData.Companion.of(NETWORK_STRING)));
+        when(cacheDataSource.get(null)).thenReturn(Maybe.just(TimeStampedData.Companion.of(CACHE_STRING, TIMESTAMP)));
+        when(networkDataSource.getAndUpdate(null, cacheDataSource)).thenReturn(Maybe.just(TimeStampedData.Companion.of(NETWORK_STRING, TIMESTAMP)));
 
         sut.get(null).subscribe(testObserver);
 
@@ -48,7 +49,7 @@ public class SingleLevelCacheRepositoryTest {
     public void whenGetWithCacheNotAvailableThenReturnFromNetwork() {
         TestObserver<String> testObserver = TestObserver.create();
         when(cacheDataSource.get(null)).thenReturn(Maybe.empty());
-        when(networkDataSource.getAndUpdate(null, cacheDataSource)).thenReturn(Maybe.just(TimeStampedData.Companion.of(NETWORK_STRING)));
+        when(networkDataSource.getAndUpdate(null, cacheDataSource)).thenReturn(Maybe.just(TimeStampedData.Companion.of(NETWORK_STRING, TIMESTAMP)));
 
         sut.get(null)
                 .subscribe(testObserver);
@@ -76,7 +77,7 @@ public class SingleLevelCacheRepositoryTest {
     @Test
     public void whenGetLatestThenReturnNetwork() {
         TestObserver<String> testObserver = TestObserver.create();
-        when(networkDataSource.get(null)).thenReturn(Maybe.just(TimeStampedData.Companion.of(NETWORK_STRING)));
+        when(networkDataSource.get(null)).thenReturn(Maybe.just(TimeStampedData.Companion.of(NETWORK_STRING, TIMESTAMP)));
 
         sut.getLatest(null)
                 .subscribe(testObserver);

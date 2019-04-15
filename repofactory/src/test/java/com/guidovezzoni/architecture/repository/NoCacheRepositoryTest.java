@@ -16,38 +16,94 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class NoCacheRepositoryTest {
     private static final String NETWORK_STRING = "Network";
+    private static final Long TIMESTAMP = 47L;
+    private static final Double PARAM = 27.48;
+    private static final Double PARAM_NULL = null;
+    private static final String REQUEST_FAILED = "Network request failed";
+
+    private static final boolean USE_GET_LATEST = true;
+    private static final boolean USE_GET = false;
+
+    private static final boolean NETWORK_SUCCESS = true;
+    private static final boolean NETWORK_FAILURE = false;
 
     @Mock
-    private DataSource<String, Void> networkDataSource;
+    private DataSource<String, Double> networkDataSource;
 
-    private NoCacheRepository<String, Void> sut;
+    private NoCacheRepository<String, Double> sut;
 
     @Before
     public void setUp() {
         sut = new NoCacheRepository<>(networkDataSource);
     }
 
-    @Test
-    public void whenGetThenReturnFromNetwork() {
+    private void testGet(Double param, boolean getLatest, boolean succeeds) {
+        if (succeeds) {
+            when(networkDataSource.get(PARAM)).thenReturn(Maybe.just(TimeStampedData.Companion.of(NETWORK_STRING, TIMESTAMP)));
+            when(networkDataSource.get(null)).thenReturn(Maybe.just(TimeStampedData.Companion.of(NETWORK_STRING, TIMESTAMP)));
+        } else {
+            when(networkDataSource.get(PARAM)).thenReturn(Maybe.error(new Exception(REQUEST_FAILED)));
+            when(networkDataSource.get(null)).thenReturn(Maybe.error(new Exception(REQUEST_FAILED)));
+        }
+
         TestObserver<String> testObserver = TestObserver.create();
-        when(networkDataSource.get(null)).thenReturn(Maybe.just(TimeStampedData.Companion.of(NETWORK_STRING)));
 
-        sut.get(null)
-                .subscribe(testObserver);
+        if (getLatest) {
+            sut.getLatest(param)
+                    .subscribe(testObserver);
+        } else {
+            sut.get(param)
+                    .subscribe(testObserver);
+        }
 
-        testObserver.assertResult(NETWORK_STRING);   // includes .assertComplete().assertNoErrors()
-        verify(networkDataSource).get(null);
+        if (succeeds) {
+            testObserver.assertResult(NETWORK_STRING);
+            verify(networkDataSource).get(param);
+        } else {
+            testObserver.assertFailureAndMessage(Exception.class, REQUEST_FAILED);
+            verify(networkDataSource).get(param);
+        }
+    }
+
+
+    @Test
+    public void whenGetLatestSucceedsThenReturnFromNetwork() {
+        testGet(PARAM, USE_GET_LATEST, NETWORK_SUCCESS);
     }
 
     @Test
-    public void whenGetLatestThenReturnFromNetwork() {
-        TestObserver<String> testObserver = TestObserver.create();
-        when(networkDataSource.get(null)).thenReturn(Maybe.just(TimeStampedData.Companion.of(NETWORK_STRING)));
+    public void whenGetLatestNullSucceedsThenReturnFromNetwork() {
+        testGet(PARAM_NULL, USE_GET_LATEST, NETWORK_SUCCESS);
+    }
 
-        sut.getLatest(null)
-                .subscribe(testObserver);
+    @Test
+    public void whenGetLatestFailsThenReturnFromNetwork() {
+        testGet(PARAM, USE_GET_LATEST, NETWORK_FAILURE);
+    }
 
-        testObserver.assertResult(NETWORK_STRING);   // includes .assertComplete().assertNoErrors()
-        verify(networkDataSource).get(null);
+    @Test
+    public void whenGetLatestNullFailsThenReturnFromNetwork() {
+        testGet(PARAM_NULL, USE_GET_LATEST, NETWORK_FAILURE);
+    }
+
+
+    @Test
+    public void whenGetSucceedsThenReturnFromNetwork() {
+        testGet(PARAM, USE_GET, NETWORK_SUCCESS);
+    }
+
+    @Test
+    public void whenGetNullSucceedsThenReturnFromNetwork() {
+        testGet(PARAM_NULL, USE_GET, NETWORK_SUCCESS);
+    }
+
+    @Test
+    public void whenGetFailsThenReturnFromNetwork() {
+        testGet(PARAM, USE_GET, NETWORK_FAILURE);
+    }
+
+    @Test
+    public void whenGetNullFailsThenReturnFromNetwork() {
+        testGet(PARAM_NULL, USE_GET, NETWORK_FAILURE);
     }
 }

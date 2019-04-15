@@ -1,6 +1,6 @@
 package com.guidovezzoni.repofactory;
 
-import com.guidovezzoni.architecture.cache.CacheHelper;
+import com.guidovezzoni.architecture.cache.TimeStampHelper;
 import com.guidovezzoni.architecture.cacheddatasource.MemoryCacheDataSource;
 import com.guidovezzoni.architecture.datasource.DataSource;
 import com.guidovezzoni.architecture.datasource.RetrofitFunctionDataSource;
@@ -14,12 +14,22 @@ import retrofit2.Response;
 
 @SuppressWarnings({"WeakerAccess", "unused"})
 public class RepoFactory {
+    public final TimeStampHelper timeStampHelper;
+
+    public RepoFactory() {
+        timeStampHelper = createTimeStampHelper();
+    }
+
+    protected TimeStampHelper createTimeStampHelper() {
+        return new TimeStampHelper(System::currentTimeMillis);
+    }
+
     protected <M, P> DataSource<M, P> createNetworkDataSource(@NonNull Function1<P, Single<Response<M>>> endPointGet) {
-        return new RetrofitFunctionDataSource<>(endPointGet);
+        return new RetrofitFunctionDataSource<>(timeStampHelper, endPointGet);
     }
 
     protected <M, P> MemoryCacheDataSource<M, P> createCachedSource() {
-        return new MemoryCacheDataSource<>(new CacheHelper(System::currentTimeMillis));
+        return new MemoryCacheDataSource<>(timeStampHelper);
     }
 
     public <M, P> Repository<M, P> createRepo(RepoType repoType, @NonNull Function1<P, Single<Response<M>>> endPointGet) {

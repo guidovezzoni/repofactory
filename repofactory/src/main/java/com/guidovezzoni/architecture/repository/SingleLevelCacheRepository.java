@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
  * @param <P> parameters required for obtaining the appropriate data
  */
 @SuppressWarnings("unused")
-public class SingleLevelCacheRepository<M, P> implements Repository<M, P> {
+public class SingleLevelCacheRepository<M, P> extends BaseRepository<M, P> implements Repository<M, P> {
     private final DataSource<M, P> networkDataSource;
     private final MemoryCacheDataSource<M, P> cacheDataSource;
 

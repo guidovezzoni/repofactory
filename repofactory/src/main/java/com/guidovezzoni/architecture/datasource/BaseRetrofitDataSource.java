@@ -1,6 +1,7 @@
 package com.guidovezzoni.architecture.datasource;
 
 
+import com.guidovezzoni.architecture.cache.TimeStampHelper;
 import com.guidovezzoni.architecture.cacheddatasource.CachedDataSource;
 import com.guidovezzoni.model.TimeStampedData;
 import com.guidovezzoni.utils.RxUtils;
@@ -18,6 +19,8 @@ import retrofit2.Response;
  */
 public abstract class BaseRetrofitDataSource<M, P> implements DataSource<M, P> {
 
+    private final TimeStampHelper timeStampHelper;
+
     /**
      * this needs to be implemented for a specific network call
      *
@@ -26,12 +29,16 @@ public abstract class BaseRetrofitDataSource<M, P> implements DataSource<M, P> {
      */
     protected abstract Single<Response<M>> getFromEndPoint(P params);
 
+    public BaseRetrofitDataSource(TimeStampHelper timeStampHelper) {
+        this.timeStampHelper = timeStampHelper;
+    }
+
     @NotNull
     @Override
     public Maybe<TimeStampedData<M>> get(P params) {
         return getFromEndPoint(params)
                 .compose(RxUtils.unWrapResponse())
-                .map(TimeStampedData.Companion::of)
+                .map((M t) -> TimeStampedData.Companion.of(t, timeStampHelper.getCurrentTimeStamp()))
                 .toMaybe();
     }
 

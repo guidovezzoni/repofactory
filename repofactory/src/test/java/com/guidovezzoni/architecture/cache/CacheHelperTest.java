@@ -7,7 +7,7 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 
 public class CacheHelperTest {
 
-    private CacheHelper sut = new CacheHelper(System::currentTimeMillis);
+    private TimeStampHelper sut = new TimeStampHelper(() -> 15L);
 
     @Test
     public void whenIsTimeStampValidWithShorterValidityThenReturnFalse() {
@@ -15,7 +15,7 @@ public class CacheHelperTest {
         long timeStamp = 1;
         long cacheValidity = 3;
 
-        assertThat(sut.isTimeStampValid(currentTimeStamp, timeStamp, cacheValidity)).isFalse();
+        assertThat(TimeStampHelper.checkTimeStampValidity(currentTimeStamp, timeStamp, cacheValidity)).isFalse();
     }
 
     @Test
@@ -24,7 +24,7 @@ public class CacheHelperTest {
         long timeStamp = 1;
         long cacheValidity = 6;
 
-        assertThat(sut.isTimeStampValid(currentTimeStamp, timeStamp, cacheValidity)).isTrue();
+        assertThat(TimeStampHelper.checkTimeStampValidity(currentTimeStamp, timeStamp, cacheValidity)).isTrue();
     }
 
     @Test
@@ -33,6 +33,30 @@ public class CacheHelperTest {
         long timeStamp = 1;
         long cacheValidity = 10;
 
-        assertThat(sut.isTimeStampValid(currentTimeStamp, timeStamp, cacheValidity)).isTrue();
+        assertThat(TimeStampHelper.checkTimeStampValidity(currentTimeStamp, timeStamp, cacheValidity)).isTrue();
+    }
+
+    @Test
+    public void whenIsCacheValidWithShorterValidityThenReturnFalse() {
+        long cacheTimestamp = 5;
+        long cacheValidity = 3;
+
+        assertThat(sut.isCacheValid(cacheTimestamp, cacheValidity)).isFalse();
+    }
+
+    @Test
+    public void whenIsCacheValidWithEqualValidityThenReturnTrue() {
+        long cacheTimestamp = 5;
+        long cacheValidity = 10;
+
+        assertThat(sut.isCacheValid(cacheTimestamp, cacheValidity)).isTrue();
+    }
+
+    @Test
+    public void whenIsCacheValidWithLongerValidityThenReturnTrue() {
+        long cacheTimestamp = 5;
+        long cacheValidity = 20;
+
+        assertThat(sut.isCacheValid(cacheTimestamp, cacheValidity)).isTrue();
     }
 }

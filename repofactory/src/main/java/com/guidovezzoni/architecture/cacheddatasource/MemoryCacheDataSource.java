@@ -1,7 +1,7 @@
 package com.guidovezzoni.architecture.cacheddatasource;
 
 import com.fernandocejas.arrow.checks.Preconditions;
-import com.guidovezzoni.architecture.cache.CacheHelper;
+import com.guidovezzoni.architecture.cache.TimeStampHelper;
 import com.guidovezzoni.model.TimeStampedData;
 import io.reactivex.Maybe;
 import org.jetbrains.annotations.NotNull;
@@ -13,11 +13,11 @@ public class MemoryCacheDataSource<M, P> implements CachedDataSource<M, P> {
 
     private TimeStampedData<M> cachedValue;
 
-    private final CacheHelper cacheHelper;
+    private final TimeStampHelper timeStampHelper;
     private long cacheValidity;
 
-    public MemoryCacheDataSource(CacheHelper cacheHelper) {
-        this.cacheHelper = cacheHelper;
+    public MemoryCacheDataSource(TimeStampHelper timeStampHelper) {
+        this.timeStampHelper = timeStampHelper;
         cacheValidity = DEFAULT_CACHE_VALIDITY;
         invalidateCache();
     }
@@ -67,6 +67,6 @@ public class MemoryCacheDataSource<M, P> implements CachedDataSource<M, P> {
     }
 
     private boolean isCacheValid() {
-        return cachedValue != null && cacheHelper.isTimeStampValid(cachedValue.getTimestamp(), cacheValidity);
+        return cachedValue != null && timeStampHelper.isCacheValid(cachedValue.getTimestamp(), cacheValidity);
     }
 }
