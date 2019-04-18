@@ -7,18 +7,20 @@ import io.reactivex.observers.TestObserver;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.MockitoAnnotations;
+
+import java.util.Arrays;
+import java.util.Random;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(Parameterized.class)
 public class NoCacheRepositoryTest {
     private static final String NETWORK_STRING = "Network";
     private static final Long TIMESTAMP = 47L;
-    private static final Double PARAM = 27.48;
-    private static final Double PARAM_NULL = null;
     private static final String REQUEST_FAILED = "Network request failed";
 
     private static final boolean USE_GET_LATEST = true;
@@ -32,18 +34,25 @@ public class NoCacheRepositoryTest {
 
     private NoCacheRepository<String, Double> sut;
 
+    @Parameterized.Parameters
+    public static Iterable<? extends Object> data() {
+        return Arrays.asList(27.48, 5.0, null, new Random().nextDouble());
+    }
+
+    @Parameterized.Parameter
+    public Double parameter;
+
     @Before
     public void setUp() {
+        MockitoAnnotations.initMocks(this);
         sut = new NoCacheRepository<>(networkDataSource);
     }
 
     private void testGet(Double param, boolean getLatest, boolean succeeds) {
         if (succeeds) {
-            when(networkDataSource.get(PARAM)).thenReturn(Maybe.just(TimeStampedData.Companion.of(NETWORK_STRING, TIMESTAMP)));
-            when(networkDataSource.get(null)).thenReturn(Maybe.just(TimeStampedData.Companion.of(NETWORK_STRING, TIMESTAMP)));
+            when(networkDataSource.get(param)).thenReturn(Maybe.just(TimeStampedData.Companion.of(NETWORK_STRING, TIMESTAMP)));
         } else {
-            when(networkDataSource.get(PARAM)).thenReturn(Maybe.error(new Exception(REQUEST_FAILED)));
-            when(networkDataSource.get(null)).thenReturn(Maybe.error(new Exception(REQUEST_FAILED)));
+            when(networkDataSource.get(param)).thenReturn(Maybe.error(new Exception(REQUEST_FAILED)));
         }
 
         TestObserver<String> testObserver = TestObserver.create();
@@ -68,42 +77,21 @@ public class NoCacheRepositoryTest {
 
     @Test
     public void whenGetLatestSucceedsThenReturnFromNetwork() {
-        testGet(PARAM, USE_GET_LATEST, NETWORK_SUCCESS);
-    }
-
-    @Test
-    public void whenGetLatestNullSucceedsThenReturnFromNetwork() {
-        testGet(PARAM_NULL, USE_GET_LATEST, NETWORK_SUCCESS);
+        testGet(parameter, USE_GET_LATEST, NETWORK_SUCCESS);
     }
 
     @Test
     public void whenGetLatestFailsThenReturnFromNetwork() {
-        testGet(PARAM, USE_GET_LATEST, NETWORK_FAILURE);
+        testGet(parameter, USE_GET_LATEST, NETWORK_FAILURE);
     }
-
-    @Test
-    public void whenGetLatestNullFailsThenReturnFromNetwork() {
-        testGet(PARAM_NULL, USE_GET_LATEST, NETWORK_FAILURE);
-    }
-
 
     @Test
     public void whenGetSucceedsThenReturnFromNetwork() {
-        testGet(PARAM, USE_GET, NETWORK_SUCCESS);
-    }
-
-    @Test
-    public void whenGetNullSucceedsThenReturnFromNetwork() {
-        testGet(PARAM_NULL, USE_GET, NETWORK_SUCCESS);
+        testGet(parameter, USE_GET, NETWORK_SUCCESS);
     }
 
     @Test
     public void whenGetFailsThenReturnFromNetwork() {
-        testGet(PARAM, USE_GET, NETWORK_FAILURE);
-    }
-
-    @Test
-    public void whenGetNullFailsThenReturnFromNetwork() {
-        testGet(PARAM_NULL, USE_GET, NETWORK_FAILURE);
+        testGet(parameter, USE_GET, NETWORK_FAILURE);
     }
 }
