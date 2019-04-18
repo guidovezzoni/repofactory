@@ -35,8 +35,7 @@ public class SingleLevelCacheRepository<M, P> extends BaseRepository<M, P> imple
     @NotNull
     @Override
     public Single<M> getLatest(P params) {
-        return networkDataSource.get(params)
-                .doOnSuccess(cacheDataSource::set)
+        return networkDataSource.getAndUpdate(params, cacheDataSource)
                 .map(TimeStampedData::getModel)
                 .toSingle();
     }

@@ -8,65 +8,81 @@ import io.reactivex.observers.TestObserver;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.MockitoAnnotations;
+
+import java.util.Arrays;
+import java.util.Random;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(Parameterized.class)
 public class SingleLevelCacheRepositoryTest {
-    private static final String NETWORK_STRING = "Network";
     private static final String CACHE_STRING = "Cache";
     private static final Long TIMESTAMP = 47L;
+    private static final TimeStampedData<String> CACHE_DATA = TimeStampedData.Companion.of(CACHE_STRING, TIMESTAMP);
+
+    private static final String NETWORK_STRING = "Network";
+    private static final TimeStampedData<String> NETWORK_DATA = TimeStampedData.Companion.of(NETWORK_STRING, TIMESTAMP);
 
     @Mock
-    private DataSource<String, Void> networkDataSource;
+    private DataSource<String, Double> networkDataSource;
     @Mock
-    private MemoryCacheDataSource<String, Void> cacheDataSource;
+    private MemoryCacheDataSource<String, Double> cacheDataSource;
 
-    private SingleLevelCacheRepository<String, Void> sut;
+    private SingleLevelCacheRepository<String, Double> sut;
+
+    @Parameterized.Parameters
+    public static Iterable<? extends Object> data() {
+        return Arrays.asList(27.48, 5.0, null, new Random().nextDouble());
+    }
+
+    @Parameterized.Parameter
+    public Double parameter;
 
     @Before
     public void setUp() {
+        MockitoAnnotations.initMocks(this);
         sut = new SingleLevelCacheRepository<>(networkDataSource, cacheDataSource);
     }
 
     @Test
     public void whenGetWithCacheAvailableThenReturnCache() {
         TestObserver<String> testObserver = TestObserver.create();
-        when(cacheDataSource.get(null)).thenReturn(Maybe.just(TimeStampedData.Companion.of(CACHE_STRING, TIMESTAMP)));
-        when(networkDataSource.getAndUpdate(null, cacheDataSource)).thenReturn(Maybe.just(TimeStampedData.Companion.of(NETWORK_STRING, TIMESTAMP)));
+        when(cacheDataSource.get(parameter)).thenReturn(Maybe.just(CACHE_DATA));
+        when(networkDataSource.getAndUpdate(parameter, cacheDataSource)).thenReturn(Maybe.just(NETWORK_DATA));
 
-        sut.get(null).subscribe(testObserver);
+        sut.get(parameter).subscribe(testObserver);
 
         testObserver.assertResult(CACHE_STRING);  // includes .assertComplete().assertNoErrors()
-        verify(cacheDataSource).get(null);
-        verify(networkDataSource).getAndUpdate(null, cacheDataSource);
+        verify(cacheDataSource).get(parameter);
+        verify(networkDataSource).getAndUpdate(parameter, cacheDataSource);
     }
 
     @Test
     public void whenGetWithCacheNotAvailableThenReturnFromNetwork() {
         TestObserver<String> testObserver = TestObserver.create();
-        when(cacheDataSource.get(null)).thenReturn(Maybe.empty());
-        when(networkDataSource.getAndUpdate(null, cacheDataSource)).thenReturn(Maybe.just(TimeStampedData.Companion.of(NETWORK_STRING, TIMESTAMP)));
+        when(cacheDataSource.get(parameter)).thenReturn(Maybe.empty());
+        when(networkDataSource.getAndUpdate(parameter, cacheDataSource)).thenReturn(Maybe.just(NETWORK_DATA));
 
-        sut.get(null)
+        sut.get(parameter)
                 .subscribe(testObserver);
 
         testObserver.assertResult(NETWORK_STRING); // includes .assertComplete().assertNoErrors()
-        verify(cacheDataSource).get(null);
+        verify(cacheDataSource).get(parameter);
         verify(cacheDataSource, never()).set(any());
-        verify(networkDataSource).getAndUpdate(null, cacheDataSource);
+        verify(networkDataSource).getAndUpdate(parameter, cacheDataSource);
     }
 
     @Test
-    public void whenGetWithNetworkFailureThenReturnHandleIt() {
+    public void whenGetWithNetworkFailureThenHandleIt() {
         TestObserver<String> testObserver = TestObserver.create();
-        when(cacheDataSource.get(null)).thenReturn(Maybe.empty());
-        when(networkDataSource.getAndUpdate(null, cacheDataSource)).thenReturn(Maybe.error(new Exception("generic network error")));
+        when(cacheDataSource.get(parameter)).thenReturn(Maybe.empty());
+        when(networkDataSource.getAndUpdate(parameter, cacheDataSource)).thenReturn(Maybe.error(new Exception("generic network error")));
 
-        sut.get(null)
+        sut.get(parameter)
                 .subscribe(testObserver);
 
         testObserver.assertNotComplete()
@@ -77,15 +93,13 @@ public class SingleLevelCacheRepositoryTest {
     @Test
     public void whenGetLatestThenReturnNetwork() {
         TestObserver<String> testObserver = TestObserver.create();
-        when(networkDataSource.get(null)).thenReturn(Maybe.just(TimeStampedData.Companion.of(NETWORK_STRING, TIMESTAMP)));
+        when(networkDataSource.getAndUpdate(parameter, cacheDataSource)).thenReturn(Maybe.just(NETWORK_DATA));
 
-        sut.getLatest(null)
+        sut.getLatest(parameter)
                 .subscribe(testObserver);
 
         testObserver.assertResult(NETWORK_STRING); // includes .assertComplete().assertNoErrors()
-
-        verify(networkDataSource).get(null);
-        verify(cacheDataSource, never()).get(null);
-        verify(cacheDataSource).set(any());
+        verify(networkDataSource).getAndUpdate(parameter, cacheDataSource);
+        verifyZeroInteractions(cacheDataSource);
     }
 }
