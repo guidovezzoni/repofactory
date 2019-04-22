@@ -46,6 +46,6 @@ public abstract class BaseRetrofitDataSource<M, P> implements DataSource<M, P> {
     @Override
     public Maybe<TimeStampedData<M>> getAndUpdate(P params, @NotNull CachedDataSource<M, P> cacheSource) {
         return get(params)
-                .doAfterSuccess(cacheSource::set);
+                .doAfterSuccess(timeStampedData -> cacheSource.set(params, timeStampedData));
     }
 }

@@ -1,5 +1,6 @@
 package com.guidovezzoni.architecture.cache;
 
+import com.guidovezzoni.model.TimeStampedData;
 import kotlin.jvm.functions.Function0;
 
 /**
@@ -19,6 +20,10 @@ public class TimeStampHelper {
 
     public boolean isCacheValid(long cacheTimestamp, long cacheValidity) {
         return checkTimeStampValidity(getCurrentTimeStamp(), cacheTimestamp, cacheValidity);
+    }
+
+    public boolean isCacheValid(TimeStampedData timeStampedData, long cacheValidity) {
+        return isCacheValid(timeStampedData.getTimestamp(), cacheValidity);
     }
 
     public static boolean checkTimeStampValidity(long currentTimeStamp, long timeStamp, long cacheValidity) {

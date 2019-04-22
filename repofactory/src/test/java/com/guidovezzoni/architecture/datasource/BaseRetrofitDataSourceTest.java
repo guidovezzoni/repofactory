@@ -12,9 +12,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import retrofit2.Response;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BaseRetrofitDataSourceTest {
@@ -86,7 +84,7 @@ public class BaseRetrofitDataSourceTest {
         //noinspection unchecked
         testObserver.assertResult(TIME_STAMPED_DATA);
         verify(timeStampHelper).getCurrentTimeStamp();
-        verify(cachedDataSource).set(TIME_STAMPED_DATA);
+        verify(cachedDataSource).set(PARAMS, TIME_STAMPED_DATA);
     }
 
     @Test

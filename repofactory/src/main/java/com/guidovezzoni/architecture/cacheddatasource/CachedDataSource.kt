@@ -16,7 +16,7 @@ interface CachedDataSource<M, P> : DataSource<M, P> {
      *
      * @param model a value wrapped in [TimeStampedData]
      */
-    fun set(model: TimeStampedData<M>)
+    fun set(params: P?, model: TimeStampedData<M>)
 
     fun invalidateCache()
 

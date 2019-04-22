@@ -35,7 +35,7 @@ public class NoCacheRepositoryTest {
     private NoCacheRepository<String, Double> sut;
 
     @Parameterized.Parameters
-    public static Iterable<? extends Object> data() {
+    public static Iterable<Object> data() {
         return Arrays.asList(27.48, 5.0, null, new Random().nextDouble());
     }
 

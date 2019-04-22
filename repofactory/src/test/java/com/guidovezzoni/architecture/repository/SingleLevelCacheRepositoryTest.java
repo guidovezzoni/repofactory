@@ -35,7 +35,7 @@ public class SingleLevelCacheRepositoryTest {
     private SingleLevelCacheRepository<String, Double> sut;
 
     @Parameterized.Parameters
-    public static Iterable<? extends Object> data() {
+    public static Iterable<Object> data() {
         return Arrays.asList(27.48, 5.0, null, new Random().nextDouble());
     }
 
@@ -54,7 +54,8 @@ public class SingleLevelCacheRepositoryTest {
         when(cacheDataSource.get(parameter)).thenReturn(Maybe.just(CACHE_DATA));
         when(networkDataSource.getAndUpdate(parameter, cacheDataSource)).thenReturn(Maybe.just(NETWORK_DATA));
 
-        sut.get(parameter).subscribe(testObserver);
+        sut.get(parameter)
+                .subscribe(testObserver);
 
         testObserver.assertResult(CACHE_STRING);  // includes .assertComplete().assertNoErrors()
         verify(cacheDataSource).get(parameter);
@@ -72,7 +73,7 @@ public class SingleLevelCacheRepositoryTest {
 
         testObserver.assertResult(NETWORK_STRING); // includes .assertComplete().assertNoErrors()
         verify(cacheDataSource).get(parameter);
-        verify(cacheDataSource, never()).set(any());
+        verify(cacheDataSource, never()).set(anyDouble(), any());
         verify(networkDataSource).getAndUpdate(parameter, cacheDataSource);
     }
 

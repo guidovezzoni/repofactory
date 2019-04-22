@@ -1,17 +1,18 @@
 package com.guidovezzoni.architecture.cacheddatasource;
 
-import com.fernandocejas.arrow.checks.Preconditions;
 import com.guidovezzoni.architecture.cache.TimeStampHelper;
 import com.guidovezzoni.model.TimeStampedData;
 import io.reactivex.Maybe;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class MemoryCacheDataSource<M, P> implements CachedDataSource<M, P> {
     private static final long DEFAULT_CACHE_VALIDITY = TimeUnit.MINUTES.toMillis(5);
 
-    private TimeStampedData<M> cachedValue;
+    private Map<P, TimeStampedData<M>> cacheMap = new HashMap<>();
 
     private final TimeStampHelper timeStampHelper;
     private long cacheValidity;
@@ -28,8 +29,8 @@ public class MemoryCacheDataSource<M, P> implements CachedDataSource<M, P> {
     @NotNull
     @Override
     public Maybe<TimeStampedData<M>> get(P params) {
-        Preconditions.checkArgument(params == null, "Params must be NULL");
-        return isCacheValid() ? Maybe.just(cachedValue) : Maybe.empty();
+        final TimeStampedData<M> cacheValue = getCacheValue(params);
+        return cacheValue != null ? Maybe.just(cacheValue) : Maybe.empty();
     }
 
     /**
@@ -38,18 +39,19 @@ public class MemoryCacheDataSource<M, P> implements CachedDataSource<M, P> {
     @NotNull
     @Override
     public Maybe<TimeStampedData<M>> getAndUpdate(P params, @NotNull CachedDataSource<M, P> cacheSource) {
-        Preconditions.checkArgument(params == null, "Params must be NULL");
-        if (isCacheValid()) {
-            cacheSource.set(cachedValue);
-            return Maybe.just(cachedValue);
+        final TimeStampedData<M> cacheValue = getCacheValue(params);
+
+        if (cacheValue != null) {
+            cacheSource.set(params, cacheValue);
+            return Maybe.just(cacheValue);
         } else {
             return Maybe.empty();
         }
     }
 
     @Override
-    public void set(@NotNull TimeStampedData<M> model) {
-        updateCache(model);
+    public void set(P params, @NotNull TimeStampedData<M> model) {
+        setCacheValue(params, model);
     }
 
     @Override
@@ -59,14 +61,18 @@ public class MemoryCacheDataSource<M, P> implements CachedDataSource<M, P> {
 
     @Override
     public void invalidateCache() {
-        updateCache(null);
+        cacheMap.clear();
     }
 
-    private void updateCache(TimeStampedData<M> newValue) {
-        cachedValue = newValue;
+    private TimeStampedData<M> getCacheValue(P param) {
+        final TimeStampedData<M> timeStampedData = cacheMap.get(param);
+        return (timeStampedData != null && timeStampHelper.isCacheValid(timeStampedData, cacheValidity))
+                ? timeStampedData : null;
     }
 
-    private boolean isCacheValid() {
-        return cachedValue != null && timeStampHelper.isCacheValid(cachedValue.getTimestamp(), cacheValidity);
+    private void setCacheValue(P param, TimeStampedData<M> newValue) {
+        if (timeStampHelper.isCacheValid(newValue, cacheValidity)) {
+            cacheMap.put(param, newValue);
+        }
     }
 }
