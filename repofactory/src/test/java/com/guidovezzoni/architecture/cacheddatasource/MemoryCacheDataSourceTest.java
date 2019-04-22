@@ -2,6 +2,7 @@ package com.guidovezzoni.architecture.cacheddatasource;
 
 import com.guidovezzoni.architecture.cache.TimeStampHelper;
 import com.guidovezzoni.model.TimeStampedData;
+import com.guidovezzoni.testutils.MaybeTestObserver;
 import io.reactivex.observers.TestObserver;
 import org.junit.Before;
 import org.junit.Test;
@@ -53,27 +54,24 @@ public class MemoryCacheDataSourceTest {
     public Double parameter;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         MockitoAnnotations.initMocks(this);
         sut = new MemoryCacheDataSource<>(timeStampHelper);
     }
 
     @Test
     public void whenGetWithEmptyCacheThenReturnEmpty() {
-        TestObserver<TimeStampedData<String>> testObserver = TestObserver.create();
+        MaybeTestObserver<TimeStampedData<String>> testObserver = MaybeTestObserver.create();
 
         sut.get(parameter)
                 .subscribe(testObserver);
 
-        testObserver.assertSubscribed()
-                .assertComplete()
-                .assertNoErrors()
-                .assertNoValues();
+        testObserver.assertCompletedEmpty();
     }
 
     @Test
     public void whenGetWithExpiredCacheThenReturnEmpty() {
-        TestObserver<TimeStampedData<String>> testObserver = TestObserver.create();
+        MaybeTestObserver<TimeStampedData<String>> testObserver = MaybeTestObserver.create();
         when(timeStampHelper.isCacheValid(CACHE_DATA_1, CACHE_VALIDITY)).thenReturn(true);
         sut.set(parameter, CACHE_DATA_1);
         when(timeStampHelper.isCacheValid(CACHE_DATA_1, CACHE_VALIDITY)).thenReturn(false);
@@ -81,30 +79,26 @@ public class MemoryCacheDataSourceTest {
         sut.get(parameter)
                 .subscribe(testObserver);
 
-        testObserver.assertSubscribed()
-                .assertComplete()
-                .assertNoErrors()
-                .assertNoValues();
+        testObserver.assertCompletedEmpty();
         verify(timeStampHelper, times(2)).isCacheValid(CACHE_DATA_1, CACHE_VALIDITY);
     }
 
     @Test
     public void whenGetWithValidCacheThenReturnValue() {
-        TestObserver<TimeStampedData<String>> testObserver = TestObserver.create();
+        MaybeTestObserver<TimeStampedData<String>> testObserver = MaybeTestObserver.create();
         when(timeStampHelper.isCacheValid(CACHE_DATA_1, CACHE_VALIDITY)).thenReturn(true);
         sut.set(parameter, CACHE_DATA_1);
 
         sut.get(parameter)
                 .subscribe(testObserver);
 
-        //noinspection unchecked
         testObserver.assertResult(CACHE_DATA_1);
         verify(timeStampHelper, times(2)).isCacheValid(CACHE_DATA_1, CACHE_VALIDITY);
     }
 
     @Test
     public void whenGetWithEmptyCacheAndMultipleCacheEntriesThenReturnEmpty() {
-        TestObserver<TimeStampedData<String>> testObserver = TestObserver.create();
+        MaybeTestObserver<TimeStampedData<String>> testObserver = MaybeTestObserver.create();
         when(timeStampHelper.isCacheValid(any(), anyLong())).thenReturn(true);
         sut.set(PARAM_2, CACHE_DATA_2);
         sut.set(PARAM_3, CACHE_DATA_3);
@@ -113,15 +107,12 @@ public class MemoryCacheDataSourceTest {
         sut.get(parameter)
                 .subscribe(testObserver);
 
-        testObserver.assertSubscribed()
-                .assertComplete()
-                .assertNoErrors()
-                .assertNoValues();
+        testObserver.assertCompletedEmpty();
     }
 
     @Test
     public void whenGetWithExpiredCacheAndMultipleCacheEntriesThenReturnValue() {
-        TestObserver<TimeStampedData<String>> testObserver = TestObserver.create();
+        MaybeTestObserver<TimeStampedData<String>> testObserver = MaybeTestObserver.create();
         when(timeStampHelper.isCacheValid(any(), anyLong())).thenReturn(true);
         sut.set(parameter, CACHE_DATA_1);
         sut.set(PARAM_2, CACHE_DATA_2);
@@ -132,16 +123,13 @@ public class MemoryCacheDataSourceTest {
         sut.get(parameter)
                 .subscribe(testObserver);
 
-        testObserver.assertSubscribed()
-                .assertComplete()
-                .assertNoErrors()
-                .assertNoValues();
+        testObserver.assertCompletedEmpty();
         verify(timeStampHelper, times(2)).isCacheValid(CACHE_DATA_1, CACHE_VALIDITY);
     }
 
     @Test
     public void whenGetWithValidCacheAndMultipleCacheEntriesThenReturnValue() {
-        TestObserver<TimeStampedData<String>> testObserver = TestObserver.create();
+        MaybeTestObserver<TimeStampedData<String>> testObserver = MaybeTestObserver.create();
         when(timeStampHelper.isCacheValid(any(), anyLong())).thenReturn(true);
         sut.set(parameter, CACHE_DATA_1);
         sut.set(PARAM_2, CACHE_DATA_2);
@@ -151,75 +139,66 @@ public class MemoryCacheDataSourceTest {
         sut.get(parameter)
                 .subscribe(testObserver);
 
-        //noinspection unchecked
         testObserver.assertResult(CACHE_DATA_1);
         verify(timeStampHelper, times(2)).isCacheValid(CACHE_DATA_1, CACHE_VALIDITY);
     }
 
     @Test
     public void whenGetAndUpdateWithEmptyCacheThenReturnEmpty() {
-        TestObserver<TimeStampedData<String>> testObserver = TestObserver.create();
+        MaybeTestObserver<TimeStampedData<String>> testObserver = MaybeTestObserver.create();
 
-        sut.getAndUpdate(parameter,cachedDataSource)
+        sut.getAndUpdate(parameter, cachedDataSource)
                 .subscribe(testObserver);
 
-        testObserver.assertSubscribed()
-                .assertComplete()
-                .assertNoErrors()
-                .assertNoValues();
+        testObserver.assertCompletedEmpty();
         verifyZeroInteractions(cachedDataSource);
     }
 
     @Test
     public void whenGetAndUpdateWithExpiredCacheThenReturnEmpty() {
-        TestObserver<TimeStampedData<String>> testObserver = TestObserver.create();
+        MaybeTestObserver<TimeStampedData<String>> testObserver = MaybeTestObserver.create();
         when(timeStampHelper.isCacheValid(CACHE_DATA_1, CACHE_VALIDITY)).thenReturn(true);
         sut.set(parameter, CACHE_DATA_1);
         when(timeStampHelper.isCacheValid(CACHE_DATA_1, CACHE_VALIDITY)).thenReturn(false);
 
-        sut.getAndUpdate(parameter,cachedDataSource)
+        sut.getAndUpdate(parameter, cachedDataSource)
                 .subscribe(testObserver);
 
-        testObserver.assertSubscribed()
-                .assertComplete()
-                .assertNoErrors()
-                .assertNoValues();
+        testObserver.assertCompletedEmpty();
         verify(timeStampHelper, times(2)).isCacheValid(CACHE_DATA_1, CACHE_VALIDITY);
         verifyZeroInteractions(cachedDataSource);
     }
 
     @Test
     public void whenGetAndUpdateWithValidCacheThenReturnValue() {
-        TestObserver<TimeStampedData<String>> testObserver = TestObserver.create();
+        MaybeTestObserver<TimeStampedData<String>> testObserver = MaybeTestObserver.create();
         when(timeStampHelper.isCacheValid(CACHE_DATA_1, CACHE_VALIDITY)).thenReturn(true);
         sut.set(parameter, CACHE_DATA_1);
 
-        sut.getAndUpdate(parameter,cachedDataSource)
+        sut.getAndUpdate(parameter, cachedDataSource)
                 .subscribe(testObserver);
 
-        //noinspection unchecked
         testObserver.assertResult(CACHE_DATA_1);
         verify(timeStampHelper, times(2)).isCacheValid(CACHE_DATA_1, CACHE_VALIDITY);
         verify(cachedDataSource).set(parameter, CACHE_DATA_1);
     }
 
     @Test
-    public void whenSetWithCacheEmptyThenReturnNewValue(){
-        TestObserver<TimeStampedData<String>> testObserver = TestObserver.create();
+    public void whenSetWithCacheEmptyThenReturnNewValue() {
+        MaybeTestObserver<TimeStampedData<String>> testObserver = MaybeTestObserver.create();
         when(timeStampHelper.isCacheValid(CACHE_DATA_1, CACHE_VALIDITY)).thenReturn(true);
 
         sut.set(parameter, CACHE_DATA_1);
 
         sut.get(parameter)
                 .subscribe(testObserver);
-        //noinspection unchecked
         testObserver.assertResult(CACHE_DATA_1);
         verify(timeStampHelper, times(2)).isCacheValid(CACHE_DATA_1, CACHE_VALIDITY);
     }
 
     @Test
     public void whenSetWithExistingCacheThenReturnLatest() {
-        TestObserver<TimeStampedData<String>> testObserver = TestObserver.create();
+        MaybeTestObserver<TimeStampedData<String>> testObserver = MaybeTestObserver.create();
         // set a value
         when(timeStampHelper.isCacheValid(CACHE_DATA_1, CACHE_VALIDITY)).thenReturn(true);
         sut.set(parameter, CACHE_DATA_1);
@@ -230,14 +209,13 @@ public class MemoryCacheDataSourceTest {
         sut.get(parameter)
                 .subscribe(testObserver);
 
-        //noinspection unchecked
         testObserver.assertResult(CACHE_DATA_2);
         verify(timeStampHelper).isCacheValid(CACHE_DATA_1, CACHE_VALIDITY);
         verify(timeStampHelper, times(2)).isCacheValid(CACHE_DATA_2, CACHE_VALIDITY);
     }
 
     @Test
-    public void whenSetCacheValidityThenUpdateValue(){
+    public void whenSetCacheValidityThenUpdateValue() {
         TestObserver<TimeStampedData<String>> testObserver = TestObserver.create();
         sut.setCacheValidity(CACHE_VALIDITY_2);
         when(timeStampHelper.isCacheValid(CACHE_DATA_1, CACHE_VALIDITY_2)).thenReturn(true);
@@ -252,7 +230,7 @@ public class MemoryCacheDataSourceTest {
 
     @Test
     public void whenInvalidateCacheThenReturnEmpty() {
-        TestObserver<TimeStampedData<String>> testObserver = TestObserver.create();
+        MaybeTestObserver<TimeStampedData<String>> testObserver = MaybeTestObserver.create();
         when(timeStampHelper.isCacheValid(CACHE_DATA_1, CACHE_VALIDITY)).thenReturn(true);
         sut.set(parameter, CACHE_DATA_1);
         sut.invalidateCache();
@@ -260,10 +238,7 @@ public class MemoryCacheDataSourceTest {
         sut.get(parameter)
                 .subscribe(testObserver);
 
-        testObserver.assertSubscribed()
-                .assertComplete()
-                .assertNoErrors()
-                .assertNoValues();
+        testObserver.assertCompletedEmpty();
         verify(timeStampHelper).isCacheValid(CACHE_DATA_1, CACHE_VALIDITY);
     }
 }

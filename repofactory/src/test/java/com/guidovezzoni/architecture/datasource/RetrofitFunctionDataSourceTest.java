@@ -11,13 +11,10 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import retrofit2.Response;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RetrofitFunctionDataSourceTest {
-    private static final Long TIMESTAMP = 47L;
     private static final String RESULT = "success!!!";
     private static final Response<String> SUCCESS = Response.success(RESULT);
     private static final double PARAM = 27.48;
@@ -31,7 +28,7 @@ public class RetrofitFunctionDataSourceTest {
     private RetrofitFunctionDataSource<String, Double> sut;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         when(endpointCall.invoke(PARAM)).thenReturn(Single.just(SUCCESS));
 
         sut = new RetrofitFunctionDataSource<>(timeStampHelper, endpointCall);

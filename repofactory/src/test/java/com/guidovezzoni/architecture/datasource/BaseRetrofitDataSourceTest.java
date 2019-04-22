@@ -32,7 +32,7 @@ public class BaseRetrofitDataSourceTest {
     private BaseRetrofitDataSource<String, Double> sutFail;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         when(timeStampHelper.getCurrentTimeStamp()).thenReturn(TIMESTAMP);
 
         sutSuccess = new BaseRetrofitDataSource<String, Double>(timeStampHelper) {

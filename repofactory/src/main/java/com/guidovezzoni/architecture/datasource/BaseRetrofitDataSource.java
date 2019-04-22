@@ -29,6 +29,7 @@ public abstract class BaseRetrofitDataSource<M, P> implements DataSource<M, P> {
      */
     protected abstract Single<Response<M>> getFromEndPoint(P params);
 
+    @SuppressWarnings("WeakerAccess")
     public BaseRetrofitDataSource(TimeStampHelper timeStampHelper) {
         this.timeStampHelper = timeStampHelper;
     }

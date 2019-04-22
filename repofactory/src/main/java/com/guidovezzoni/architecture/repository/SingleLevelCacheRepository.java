@@ -40,10 +40,12 @@ public class SingleLevelCacheRepository<M, P> extends BaseRepository<M, P> imple
                 .toSingle();
     }
 
+    @SuppressWarnings("WeakerAccess")
     public void setCacheValidity(Long newCacheValidity) {
         cacheDataSource.setCacheValidity(newCacheValidity);
     }
 
+    @SuppressWarnings("WeakerAccess")
     public void invalidateCache() {
         cacheDataSource.invalidateCache();
     }

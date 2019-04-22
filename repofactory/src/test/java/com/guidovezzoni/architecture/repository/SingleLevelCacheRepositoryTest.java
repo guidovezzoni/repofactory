@@ -14,6 +14,7 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.Arrays;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -21,11 +22,14 @@ import static org.mockito.Mockito.*;
 @RunWith(Parameterized.class)
 public class SingleLevelCacheRepositoryTest {
     private static final String CACHE_STRING = "Cache";
-    private static final Long TIMESTAMP = 47L;
-    private static final TimeStampedData<String> CACHE_DATA = TimeStampedData.Companion.of(CACHE_STRING, TIMESTAMP);
+    private static final TimeStampedData<String> CACHE_DATA =
+            TimeStampedData.Companion.of(CACHE_STRING, TimeUnit.SECONDS.toMillis(1));
 
     private static final String NETWORK_STRING = "Network";
-    private static final TimeStampedData<String> NETWORK_DATA = TimeStampedData.Companion.of(NETWORK_STRING, TIMESTAMP);
+    private static final TimeStampedData<String> NETWORK_DATA =
+            TimeStampedData.Companion.of(NETWORK_STRING, TimeUnit.SECONDS.toMillis(1));
+
+    private static final Long CACHE_VALIDITY_2 = TimeUnit.MINUTES.toMillis(15);
 
     @Mock
     private DataSource<String, Double> networkDataSource;
@@ -102,5 +106,21 @@ public class SingleLevelCacheRepositoryTest {
         testObserver.assertResult(NETWORK_STRING); // includes .assertComplete().assertNoErrors()
         verify(networkDataSource).getAndUpdate(parameter, cacheDataSource);
         verifyZeroInteractions(cacheDataSource);
+    }
+
+    @Test
+    public void whenSetCacheValidityThenInvokeCachedDataSource() {
+
+        sut.setCacheValidity(CACHE_VALIDITY_2);
+
+        verify(cacheDataSource).setCacheValidity(CACHE_VALIDITY_2);
+    }
+
+    @Test
+    public void whenInvalidateCacheThenInvokeCachedDataSource() {
+
+        sut.invalidateCache();
+
+        verify(cacheDataSource).invalidateCache();
     }
 }

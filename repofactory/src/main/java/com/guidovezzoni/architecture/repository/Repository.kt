@@ -34,11 +34,4 @@ interface Repository<M, P> {
      * same as [getLatest] but with params null
      */
     fun getLatest(): Single<M>
-
-
-//    TODO: to be implemented and tested
-//    fun invalidateCache()
-//
-//    fun setCacheValidity(validity: Long)
-
 }
