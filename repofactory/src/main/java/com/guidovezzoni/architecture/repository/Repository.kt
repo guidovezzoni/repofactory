@@ -34,4 +34,6 @@ interface Repository<M, P> {
      * same as [getLatest] but with params null
      */
     fun getLatest(): Single<M>
+
+    fun invalidateCache()
 }

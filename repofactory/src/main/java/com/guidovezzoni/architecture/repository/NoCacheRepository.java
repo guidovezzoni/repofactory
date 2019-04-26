@@ -33,4 +33,8 @@ public class NoCacheRepository<M, P> extends BaseRepository<M, P> implements Rep
                 .map(TimeStampedData::getModel)
                 .toSingle();
     }
+
+    public void invalidateCache() {
+        // nothing to do
+    }
 }

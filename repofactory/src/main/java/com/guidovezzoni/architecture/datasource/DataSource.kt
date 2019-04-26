@@ -17,8 +17,6 @@ interface DataSource<M, P> {
      *
      * @param params parameters required for the request
      * @return a [Maybe] that emits the requested value if present, wrapped in [TimeStampedData]
-     *
-     * TODO should this be a Single?
      */
     fun get(params: P?): Maybe<TimeStampedData<M>>
 
@@ -28,8 +26,6 @@ interface DataSource<M, P> {
      * @param params parameters required for the request
      * @param anotherSource a [CachedDataSource] representing the cache that needs updating
      * @return a [Maybe] that emits the requested value if present, wrapped in [TimeStampedData]
-     *
-     * TODO should this be a Single?
      */
     fun getAndUpdate(params: P?, anotherSource: CachedDataSource<M, P>): Maybe<TimeStampedData<M>>
 }
