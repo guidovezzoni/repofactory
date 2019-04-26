@@ -1,5 +1,5 @@
 [![](https://jitpack.io/v/guidovezzoni/repofactory.svg)](https://jitpack.io/#guidovezzoni/repofactory)
-
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/f1e73bb0ea4448ec84401e80b948e7b0)](https://www.codacy.com/app/guidovezzoni/repofactory?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=guidovezzoni/repofactory&amp;utm_campaign=Badge_Grade)
 
 # RepoFactory
 Tired of writing boiler plate code for implementing a standard repository pattern? Here is a flexible solution :-)
