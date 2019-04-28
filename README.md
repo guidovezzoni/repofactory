@@ -18,7 +18,7 @@ allprojects {
 Add the dependency
 ```
 dependencies {
-	        compile 'com.github.guidovezzoni:repofactory:0.1.0_alpha'
+	        implementation 'com.github.guidovezzoni:repofactory:0.1.0_alpha'
 	}
 ```
 
@@ -27,6 +27,10 @@ dependencies {
 ###### version 0.1.0_alpha 26/04/2019
 
 First alpha release
+
+###### version 0.1.1_alpha 26/04/2019
+
+Fixed: network call always executed
 
 
 

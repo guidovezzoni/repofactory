@@ -4,6 +4,7 @@ package com.guidovezzoni.architecture.repository;
 import com.guidovezzoni.architecture.cacheddatasource.MemoryCacheDataSource;
 import com.guidovezzoni.architecture.datasource.DataSource;
 import com.guidovezzoni.model.TimeStampedData;
+import io.reactivex.Maybe;
 import io.reactivex.Single;
 import org.jetbrains.annotations.NotNull;
 
@@ -27,7 +28,7 @@ public class SingleLevelCacheRepository<M, P> extends BaseRepository<M, P> imple
     @Override
     public Single<M> get(P params) {
         return cacheDataSource.get(params)
-                .switchIfEmpty(networkDataSource.getAndUpdate(params, cacheDataSource))
+                .switchIfEmpty(Maybe.defer(() -> networkDataSource.getAndUpdate(params, cacheDataSource)))
                 .map(TimeStampedData::getModel)
                 .toSingle();
     }

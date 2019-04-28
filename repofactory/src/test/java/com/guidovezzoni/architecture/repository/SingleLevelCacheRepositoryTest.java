@@ -56,14 +56,13 @@ public class SingleLevelCacheRepositoryTest {
     public void whenGetWithCacheAvailableThenReturnCache() {
         TestObserver<String> testObserver = TestObserver.create();
         when(cacheDataSource.get(parameter)).thenReturn(Maybe.just(CACHE_DATA));
-        when(networkDataSource.getAndUpdate(parameter, cacheDataSource)).thenReturn(Maybe.just(NETWORK_DATA));
 
         sut.get(parameter)
                 .subscribe(testObserver);
 
         testObserver.assertResult(CACHE_STRING);  // includes .assertComplete().assertNoErrors()
         verify(cacheDataSource).get(parameter);
-        verify(networkDataSource).getAndUpdate(parameter, cacheDataSource);
+        verifyZeroInteractions(networkDataSource);
     }
 
     @Test
