@@ -4,8 +4,35 @@
 # RepoFactory
 Tired of writing boiler plate code for implementing a standard repository pattern? Here is a flexible solution :-)
 
+# Architecture
 
-# Usage
+# Getting started
+The idea behind the library is to provide a simple way to instantiate a repository pattern, providing a simple parameter to define the type of repository:
+
+This is all is needed:
+### 1) Instantiate the factory and declare a Repository<return_type, parameters>
+```
+    private final RepoFactory repoFactory = new RepoFactory();
+    private final Repository<ForecastResponse, String> weatherForecastRepo;
+```
+
+### 2) Instantiate the repository defining the endpoint call
+```
+        weatherForecastRepo = repoFactory.createRepo(RepoType.SINGLE_LEVEL_CACHE,
+                location -> interfaceApi
+                        .getForecast(location);
+```
+
+### 2) Define the single to subscribe to
+```
+    public Single<ForecastResponse> getForecast(String location) {
+        return weatherForecastRepo.get();
+    }
+```
+
+
+
+## Gradle
 Add the JitPack repository in your root build.gradle at the end of repositories:
 ```
 allprojects {
@@ -18,19 +45,35 @@ allprojects {
 Add the dependency
 ```
 dependencies {
-	        implementation 'com.github.guidovezzoni:repofactory:0.1.0_alpha'
+	        implementation 'com.github.guidovezzoni:repofactory:0.1.2_alpha'
 	}
 ```
 
+## Sample usage
+
+
+
+
+# Additional features
+These features are candidate for next phase implementation:
+* 3 level cache 
+* periodical removal of expired cache
+
+
 # History
+
+###### version 0.1.2_alpha 29/04/2019
+
+Minor changes, documentation improvements
+
+###### version 0.1.1_alpha 28/04/2019
+
+Fixed: network call always executed
 
 ###### version 0.1.0_alpha 26/04/2019
 
 First alpha release
 
-###### version 0.1.1_alpha 26/04/2019
-
-Fixed: network call always executed
 
 
 
