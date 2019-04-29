@@ -18,8 +18,8 @@ The only limitation is that methods `equals` and `hashCode` must be overridden.
 This is because this class will be used as key for the `HashMap` that handles the cache.
 
 c. type of repository chosen. Currently it can be:
-- NO_CACHE: the repository simply triggers a network call for each request
-- SINGLE_LEVEL_CACHE: a one-level memory cache is present and will be used until the response associated with a specific value of parameters doesn't expire
+-  NO_CACHE: the repository simply triggers a network call for each request
+-  SINGLE_LEVEL_CACHE: a one-level memory cache is present and will be used until the response associated with a specific value of parameters doesn't expire
 
 ### 2) Instantiate the factory and declare a `Repository<return_type, parameters>`
 ```
@@ -64,8 +64,8 @@ dependencies {
 
 ## Additional features
 These features are likely to be included in future releases:
-- 3 level cache 
-- periodical removal of expired cache
+-  3 level cache 
+-  periodical removal of expired cache
 
 ## Known Issues
 
@@ -82,7 +82,6 @@ When parameter `<P>` uses a class for which methods `equals` and `hashCode` have
 ### Expired cache entries are not removed
 Expired cache entries can build up in time if the parameters change frequently and values are not refreshed
 
-
 ## Bugs and Feedback
 For bugs, questions and discussions please use the [GitHub Issues](https://github.com/guidovezzoni/repofactory/issues) .
 
@@ -90,7 +89,7 @@ For bugs, questions and discussions please use the [GitHub Issues](https://githu
 
 | Version     | Date       | Notes                                     |
 |:------------|:-----------|:------------------------------------------|
-| 0.1.2_alpha | 29/04/2019 | Minor changes, documentation improvements |
+| 0.1.2_alpha | 30/04/2019 | Minor changes, documentation improvements |
 | 0.1.1_alpha | 28/04/2019 | Fixed: network call always executed       |
 | 0.1.0_alpha | 26/04/2019 | First alpha release                       |
 
