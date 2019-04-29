@@ -10,29 +10,45 @@ Tired of writing boiler plate code for implementing a standard repository patter
 The idea behind the library is to provide a simple way to instantiate a repository pattern, providing a simple parameter to define the type of repository:
 
 This is all is needed:
-### 1) Instantiate the factory and declare a Repository<return_type, parameters>
+
+### 1) Define type of data involved:
+a. model returned by the endpoint call - `<M>` in the code
+
+b. parameter required for the endpoint call - `<P>` in the code. If multiple parameters are required, then [Pair] or [Triple] can be used, or any other Tuple. The only limitation is that [Object.equals] and [Object.hashCode] must be overridden.
+This is because instances will be used as key for the HashMap that handles the cache.
+
+c. type of repository chosen. Currently it's:
+
+* NO_CACHE - the repository simply triggers a network call for each request
+
+* SINGLE_LEVEL_CACHE - a one level memory cache is present and will be used until the response associated with a specific value of parameters doesn't expire
+ 
+
+### 2) Instantiate the factory and declare a Repository<return_type, parameters>
 ```
     private final RepoFactory repoFactory = new RepoFactory();
     private final Repository<ForecastResponse, String> weatherForecastRepo;
 ```
 
-### 2) Instantiate the repository defining the endpoint call
+### 3) Instantiate the repository defining the endpoint call
 ```
         weatherForecastRepo = repoFactory.createRepo(RepoType.SINGLE_LEVEL_CACHE,
                 location -> interfaceApi
                         .getForecast(location);
 ```
 
-### 2) Define the single to subscribe to
+### 4) Define the single to subscribe to
 ```
     public Single<ForecastResponse> getForecast(String location) {
         return weatherForecastRepo.get();
     }
 ```
 
+# Custom implementation
 
+If any part of the system needs to be customised - the network datasource, the cache or the repository itself - RepoFactory can be derived and it's method overridden as required.
 
-## Gradle
+# Gradle
 Add the JitPack repository in your root build.gradle at the end of repositories:
 ```
 allprojects {
@@ -49,13 +65,9 @@ dependencies {
 	}
 ```
 
-## Sample usage
-
-
-
 
 # Additional features
-These features are candidate for next phase implementation:
+These features are likely to be included in future releases:
 * 3 level cache 
 * periodical removal of expired cache
 
