@@ -2,27 +2,27 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/f1e73bb0ea4448ec84401e80b948e7b0)](https://www.codacy.com/app/guidovezzoni/repofactory?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=guidovezzoni/repofactory&amp;utm_campaign=Badge_Grade)
 
 # RepoFactory
-Tired of writing boiler plate code for implementing a standard repository pattern? Here is a flexible solution for your repository pattern: you can either have a ready-made or create one yourself.
+Tired of writing boiler plate code for implementing a standard repository pattern? Here is a flexible solution for your repository pattern: you can either have a ready-made one or create one yourself.
 
 # Getting started
 The idea behind this library is to provide a simple way to instantiate a repository pattern, providing a parameter to define the type of repository.
 
-The following steps describe how to implement your ready-made repository pattern. 
+The following steps describe how to implement a ready-made repository pattern. 
 
 ### 1) Define type of data involved:
 a. model returned by the endpoint call, the same class will be used for caching the response - `<M>` in the code
 
 b. any parameters required for the endpoint call - `<P>` in the code. It can be `Void` if no params are required. 
 In case of multiple parameters, then `Pair` or `Triple` (from Kotlin or java) can be used, or any other _Tuple_ defined in other libraries. 
-The only limitation is `equals` and `hashCode` must be overridden.
+The only limitation is that methods `equals` and `hashCode` must be overridden.
 This is because this class will be used as key for the `HashMap` that handles the cache.
 
-c. type of repository chosen. Currently it's:
+c. type of repository chosen. Currently it can be:
 * NO_CACHE - the repository simply triggers a network call for each request
 * SINGLE_LEVEL_CACHE - a one level memory cache is present and will be used until the response associated with a specific value of parameters doesn't expire
- 
 
-### 2) Instantiate the factory and declare a Repository<return_type, parameters>
+
+### 2) Instantiate the factory and declare a `Repository<return_type, parameters>`
 ```
     private final RepoFactory repoFactory = new RepoFactory();
     private final Repository<ForecastResponse, String> weatherForecastRepo;
@@ -34,16 +34,16 @@ c. type of repository chosen. Currently it's:
                 location -> interfaceApi.getForecast(location);
 ```
 
-### 4) Define the single to subscribe to
+### 4) Define the `Single` to which subscribe
 ```
     public Single<ForecastResponse> getForecast(String location) {
         return weatherForecastRepo.get();
     }
 ```
 
-# Custom implementation
+# Custom implementations
 
-If any part of the architecture needs to be customised - either the network datasource or the cache or the repository itself - the `RepoFactory` class can be derived and its method overridden as required.
+If any part of the architecture needs to be customised for specific needs - either the network datasource or the cache or the repository itself - the `RepoFactory` class can be derived and its method overridden as required.
 See [RepoFactory.java](https://github.com/guidovezzoni/repofactory/blob/master/repofactory/src/main/java/com/guidovezzoni/repofactory/RepoFactory.java) for more info.
 
 # Gradle
