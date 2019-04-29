@@ -2,25 +2,23 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/f1e73bb0ea4448ec84401e80b948e7b0)](https://www.codacy.com/app/guidovezzoni/repofactory?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=guidovezzoni/repofactory&amp;utm_campaign=Badge_Grade)
 
 # RepoFactory
-Tired of writing boiler plate code for implementing a standard repository pattern? Here is a flexible solution :-)
-
-# Architecture
+Tired of writing boiler plate code for implementing a standard repository pattern? Here is a flexible solution for your repository pattern: you can either have a ready-made or create one yourself.
 
 # Getting started
-The idea behind the library is to provide a simple way to instantiate a repository pattern, providing a simple parameter to define the type of repository:
+The idea behind this library is to provide a simple way to instantiate a repository pattern, providing a parameter to define the type of repository.
 
-This is all is needed:
+The following steps describe how to implement your ready-made repository pattern. 
 
 ### 1) Define type of data involved:
-a. model returned by the endpoint call - `<M>` in the code
+a. model returned by the endpoint call, the same class will be used for caching the response - `<M>` in the code
 
-b. parameter required for the endpoint call - `<P>` in the code. If multiple parameters are required, then [Pair] or [Triple] can be used, or any other Tuple. The only limitation is that [Object.equals] and [Object.hashCode] must be overridden.
-This is because instances will be used as key for the HashMap that handles the cache.
+b. any parameters required for the endpoint call - `<P>` in the code. It can be `Void` if no params are required. 
+In case of multiple parameters, then `Pair` or `Triple` (from Kotlin or java) can be used, or any other _Tuple_ defined in other libraries. 
+The only limitation is `equals` and `hashCode` must be overridden.
+This is because this class will be used as key for the `HashMap` that handles the cache.
 
 c. type of repository chosen. Currently it's:
-
 * NO_CACHE - the repository simply triggers a network call for each request
-
 * SINGLE_LEVEL_CACHE - a one level memory cache is present and will be used until the response associated with a specific value of parameters doesn't expire
  
 
@@ -33,8 +31,7 @@ c. type of repository chosen. Currently it's:
 ### 3) Instantiate the repository defining the endpoint call
 ```
         weatherForecastRepo = repoFactory.createRepo(RepoType.SINGLE_LEVEL_CACHE,
-                location -> interfaceApi
-                        .getForecast(location);
+                location -> interfaceApi.getForecast(location);
 ```
 
 ### 4) Define the single to subscribe to
@@ -46,22 +43,23 @@ c. type of repository chosen. Currently it's:
 
 # Custom implementation
 
-If any part of the system needs to be customised - the network datasource, the cache or the repository itself - RepoFactory can be derived and it's method overridden as required.
+If any part of the architecture needs to be customised - either the network datasource or the cache or the repository itself - the `RepoFactory` class can be derived and its method overridden as required.
+See [RepoFactory.java](https://github.com/guidovezzoni/repofactory/blob/master/repofactory/src/main/java/com/guidovezzoni/repofactory/RepoFactory.java) for more info.
 
 # Gradle
 Add the JitPack repository in your root build.gradle at the end of repositories:
 ```
 allprojects {
-		repositories {
-			...
-			maven { url 'https://jitpack.io' }
-		}
-	}
+        repositories {
+            ...
+            maven { url 'https://jitpack.io' }
+        }
+    }
 ```
 Add the dependency
 ```
 dependencies {
-	        implementation 'com.github.guidovezzoni:repofactory:0.1.2_alpha'
+            implementation 'com.github.guidovezzoni:repofactory:0.1.2_alpha'
 	}
 ```
 
@@ -71,6 +69,8 @@ These features are likely to be included in future releases:
 * 3 level cache 
 * periodical removal of expired cache
 
+# Bugs and Feedback
+For bugs, questions and discussions please use the [GitHub Issues](https://github.com/guidovezzoni/repofactory/issues) .
 
 # History
 
@@ -85,9 +85,6 @@ Fixed: network call always executed
 ###### version 0.1.0_alpha 26/04/2019
 
 First alpha release
-
-
-
 
 # License
 ```
