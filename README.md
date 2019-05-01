@@ -2,7 +2,9 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/f1e73bb0ea4448ec84401e80b948e7b0)](https://www.codacy.com/app/guidovezzoni/repofactory?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=guidovezzoni/repofactory&amp;utm_campaign=Badge_Grade)
 
 # RepoFactory
-Tired of writing boiler plate code for implementing a standard repository pattern? Here is a flexible solution for your repository pattern: you can either have a ready-made one or create one yourself.
+A flexible solution for creating a repository pattern
+
+Based on RxJava and Retrofit you can either instantiate a ready-made one or build your own.
 
 ## Getting started
 The idea behind this library is to provide a simple way to instantiate a repository pattern, providing a parameter to define the type of repository.
