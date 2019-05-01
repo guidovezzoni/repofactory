@@ -2,7 +2,9 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/f1e73bb0ea4448ec84401e80b948e7b0)](https://www.codacy.com/app/guidovezzoni/repofactory?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=guidovezzoni/repofactory&amp;utm_campaign=Badge_Grade)
 
 # RepoFactory
-Tired of writing boiler plate code for implementing a standard repository pattern? Here is a flexible solution for your repository pattern: you can either have a ready-made one or create one yourself.
+A flexible solution for creating a repository pattern
+
+Based on RxJava and Retrofit you can either instantiate a ready-made one or build your own.
 
 ## Getting started
 The idea behind this library is to provide a simple way to instantiate a repository pattern, providing a parameter to define the type of repository.
@@ -58,7 +60,7 @@ allprojects {
 Add the dependency
 ```
 dependencies {
-            implementation 'com.github.guidovezzoni:repofactory:0.1.2_alpha'
+            implementation 'com.github.guidovezzoni:repofactory:1.0.0'
 	}
 ```
 
@@ -89,7 +91,8 @@ For bugs, questions and discussions please use the [GitHub Issues](https://githu
 
 | Version     | Date       | Notes                                     |
 |:------------|:-----------|:------------------------------------------|
-| 0.1.2_alpha | 30/04/2019 | Minor changes, documentation improvements |
+| 1.0.0       | 01/05/2019 | First Release                             |
+| 0.1.2_alpha | 01/05/2019 | Minor changes, documentation improvements |
 | 0.1.1_alpha | 28/04/2019 | Fixed: network call always executed       |
 | 0.1.0_alpha | 26/04/2019 | First alpha release                       |
 
