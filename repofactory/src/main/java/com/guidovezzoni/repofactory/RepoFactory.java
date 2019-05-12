@@ -8,18 +8,20 @@ import com.guidovezzoni.architecture.repository.NoCacheRepository;
 import com.guidovezzoni.architecture.repository.Repository;
 import com.guidovezzoni.architecture.repository.SingleLevelCacheRepository;
 import io.reactivex.Single;
-import io.reactivex.annotations.NonNull;
 import kotlin.jvm.functions.Function1;
+import org.jetbrains.annotations.NotNull;
 import retrofit2.Response;
 
 @SuppressWarnings({"WeakerAccess", "unused"})
 public class RepoFactory {
+    @NotNull
     public final TimeStampHelper timeStampHelper;
 
     public RepoFactory() {
         timeStampHelper = createTimeStampHelper();
     }
 
+    @NotNull
     protected TimeStampHelper createTimeStampHelper() {
         return new TimeStampHelper(System::currentTimeMillis);
     }
@@ -34,7 +36,8 @@ public class RepoFactory {
      *                    [Object.equals] and [Object.hashCode] have been properly overridden.
      * @return a {@link DataSource} instance
      */
-    protected <M, P> DataSource<M, P> createNetworkDataSource(@NonNull Function1<P, Single<Response<M>>> endPointGet) {
+    @NotNull
+    protected <M, P> DataSource<M, P> createNetworkDataSource(@NotNull Function1<P, Single<Response<M>>> endPointGet) {
         return new RetrofitFunctionDataSource<>(timeStampHelper, endPointGet);
     }
 
@@ -47,6 +50,7 @@ public class RepoFactory {
      *            [Object.equals] and [Object.hashCode] have been properly overridden.
      * @return a {@link MemoryCacheDataSource} instance
      */
+    @NotNull
     protected <M, P> MemoryCacheDataSource<M, P> createCachedSource() {
         return new MemoryCacheDataSource<>(timeStampHelper);
     }
@@ -62,7 +66,8 @@ public class RepoFactory {
      *                    [Object.equals] and [Object.hashCode] have been properly overridden.
      * @return a {@link Repository} instance
      */
-    public <M, P> Repository<M, P> createRepo(RepoType repoType, @NonNull Function1<P, Single<Response<M>>> endPointGet) {
+    @NotNull
+    public <M, P> Repository<M, P> createRepo(@NotNull RepoType repoType, @NotNull Function1<P, Single<Response<M>>> endPointGet) {
         DataSource<M, P> networkSource = createNetworkDataSource(endPointGet);
 
         switch (repoType) {

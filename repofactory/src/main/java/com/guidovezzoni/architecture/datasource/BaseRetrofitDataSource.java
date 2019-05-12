@@ -19,6 +19,7 @@ import retrofit2.Response;
  */
 public abstract class BaseRetrofitDataSource<M, P> implements DataSource<M, P> {
 
+    @NotNull
     private final TimeStampHelper timeStampHelper;
 
     /**
@@ -30,7 +31,7 @@ public abstract class BaseRetrofitDataSource<M, P> implements DataSource<M, P> {
     protected abstract Single<Response<M>> getFromEndPoint(P params);
 
     @SuppressWarnings("WeakerAccess")
-    public BaseRetrofitDataSource(TimeStampHelper timeStampHelper) {
+    public BaseRetrofitDataSource(@NotNull TimeStampHelper timeStampHelper) {
         this.timeStampHelper = timeStampHelper;
     }
 
