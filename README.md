@@ -92,7 +92,6 @@ For bugs, questions and discussions please use the [GitHub Issues](https://githu
 
 | Version     | Date       | Notes                                     |
 |:------------|:-----------|:------------------------------------------|
-| 1.0.1       | 12/05/2019 | Minor update (@NotNull)                   |
 | 1.0.0       | 01/05/2019 | First Release                             |
 | 0.1.2_alpha | 01/05/2019 | Minor changes, documentation improvements |
 | 0.1.1_alpha | 28/04/2019 | Fixed: network call always executed       |
