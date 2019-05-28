@@ -16,10 +16,13 @@ import org.jetbrains.annotations.NotNull;
  */
 @SuppressWarnings("unused")
 public class SingleLevelCacheRepository<M, P> extends BaseRepository<M, P> implements Repository<M, P> {
+    @NotNull
     private final DataSource<M, P> networkDataSource;
+
+    @NotNull
     private final MemoryCacheDataSource<M, P> cacheDataSource;
 
-    public SingleLevelCacheRepository(DataSource<M, P> networkDataSource, MemoryCacheDataSource<M, P> cacheDataSource) {
+    public SingleLevelCacheRepository(@NotNull DataSource<M, P> networkDataSource, @NotNull MemoryCacheDataSource<M, P> cacheDataSource) {
         this.networkDataSource = networkDataSource;
         this.cacheDataSource = cacheDataSource;
     }
@@ -46,7 +49,6 @@ public class SingleLevelCacheRepository<M, P> extends BaseRepository<M, P> imple
         cacheDataSource.setCacheValidity(newCacheValidity);
     }
 
-    @SuppressWarnings("WeakerAccess")
     public void invalidateCache() {
         cacheDataSource.invalidateCache();
     }

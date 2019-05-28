@@ -17,7 +17,7 @@ public class MemoryCacheDataSource<M, P> implements CachedDataSource<M, P> {
     private final TimeStampHelper timeStampHelper;
     private long cacheValidity;
 
-    public MemoryCacheDataSource(TimeStampHelper timeStampHelper) {
+    public MemoryCacheDataSource(@NotNull TimeStampHelper timeStampHelper) {
         this.timeStampHelper = timeStampHelper;
         cacheValidity = DEFAULT_CACHE_VALIDITY;
         invalidateCache();

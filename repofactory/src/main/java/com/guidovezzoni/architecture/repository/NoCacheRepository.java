@@ -14,9 +14,10 @@ import org.jetbrains.annotations.NotNull;
  */
 @SuppressWarnings("unused")
 public class NoCacheRepository<M, P> extends BaseRepository<M, P> implements Repository<M, P> {
+    @NotNull
     private final DataSource<M, P> networkDataSource;
 
-    public NoCacheRepository(DataSource<M, P> networkDataSource) {
+    public NoCacheRepository(@NotNull DataSource<M, P> networkDataSource) {
         this.networkDataSource = networkDataSource;
     }
 

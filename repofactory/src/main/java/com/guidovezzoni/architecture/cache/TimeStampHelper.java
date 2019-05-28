@@ -2,6 +2,7 @@ package com.guidovezzoni.architecture.cache;
 
 import com.guidovezzoni.model.TimeStampedData;
 import kotlin.jvm.functions.Function0;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Helper required for testing purposes
@@ -10,7 +11,7 @@ import kotlin.jvm.functions.Function0;
 public class TimeStampHelper {
     private final Function0<Long> getCurrentTimeStampFunction;
 
-    public TimeStampHelper(Function0<Long> getCurrentTimeStampFunction) {
+    public TimeStampHelper(@NotNull Function0<Long> getCurrentTimeStampFunction) {
         this.getCurrentTimeStampFunction = getCurrentTimeStampFunction;
     }
 
