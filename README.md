@@ -90,12 +90,13 @@ For bugs, questions and discussions please use the [GitHub Issues](https://githu
 
 ## History
 
-| Version     | Date       | Notes                                     |
-|:------------|:-----------|:------------------------------------------|
-| 1.0.0       | 01/05/2019 | First Release                             |
-| 0.1.2_alpha | 01/05/2019 | Minor changes, documentation improvements |
-| 0.1.1_alpha | 28/04/2019 | Fixed: network call always executed       |
-| 0.1.0_alpha | 26/04/2019 | First alpha release                       |
+| Version     | Date       | Issues        | Notes                                      |
+|:------------|:-----------|:--------------|:-------------------------------------------|
+| 1.0.1       | 28/05/2019 | 008,009,F010  | Some Kotlin files converted, minor changes |
+| 1.0.0       | 01/05/2019 |               | First Release                              |
+| 0.1.2_alpha | 01/05/2019 |               | Minor changes, documentation improvements  |
+| 0.1.1_alpha | 28/04/2019 |               | Fixed: network call always executed        |
+| 0.1.0_alpha | 26/04/2019 |               | First alpha release                        |
 
 ## License
 ```
