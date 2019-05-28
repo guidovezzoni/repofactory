@@ -5,13 +5,17 @@ import com.guidovezzoni.model.TimeStampedData
 import io.reactivex.Maybe
 import java.util.concurrent.TimeUnit
 
+/**
+ * Implementation of [CachedDataSource] that uses a [MutableMap] to handle the cache in memory.
+ *
+ * @param M data model type
+ * @param P parameters type. This class should override [Object.equals] and [Object.hashCode] as caching uses HashMap.
+ * If multiple parameters are required, then [Pair] or [Triple] can be used, or any other Tuple, as long as
+ * [Object.equals] and [Object.hashCode] have been properly overridden.
+ */
 open class MemoryCacheDataSource<M, P>(private val timeStampHelper: TimeStampHelper) : CachedDataSource<M, P> {
     private val cacheMap = mutableMapOf<P?, TimeStampedData<M>>()
     private var cacheValidity = DEFAULT_CACHE_VALIDITY
-
-    init {
-        invalidateCache()
-    }
 
     override fun set(params: P?, model: TimeStampedData<M>) {
         setCacheValue(params, model)
