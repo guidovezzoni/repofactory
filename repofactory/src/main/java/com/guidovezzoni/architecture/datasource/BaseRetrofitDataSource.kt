@@ -3,9 +3,9 @@ package com.guidovezzoni.architecture.datasource
 import com.guidovezzoni.architecture.cache.TimeStampHelper
 import com.guidovezzoni.architecture.cacheddatasource.CachedDataSource
 import com.guidovezzoni.model.TimeStampedData
-import com.guidovezzoni.utils.RxUtils
 import io.reactivex.Maybe
 import io.reactivex.Single
+import io.reactivex.SingleTransformer
 import retrofit2.Response
 
 /**
@@ -15,7 +15,10 @@ import retrofit2.Response
  * @param M data model
  * @param P parameters required for obtaining the appropriate data
  */
-abstract class BaseRetrofitDataSource<M, P>(private val timeStampHelper: TimeStampHelper) : DataSource<M, P> {
+abstract class BaseRetrofitDataSource<M, P>(
+    private val timeStampHelper: TimeStampHelper,
+    private val retrofitUnwrapper: SingleTransformer<Response<M>, M>
+) : DataSource<M, P> {
 
     /**
      * this needs to be implemented for a specific network call
@@ -27,7 +30,7 @@ abstract class BaseRetrofitDataSource<M, P>(private val timeStampHelper: TimeSta
 
     override fun get(params: P?): Maybe<TimeStampedData<M>> {
         return getFromEndPoint(params)
-            .compose(RxUtils.unWrapResponse())
+            .compose(retrofitUnwrapper)
             .map { t: M -> TimeStampedData.of(t, timeStampHelper.currentTimeStamp) }
             .toMaybe()
     }

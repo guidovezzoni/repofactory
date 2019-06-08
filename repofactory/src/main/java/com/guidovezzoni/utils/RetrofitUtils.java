@@ -6,10 +6,10 @@ import retrofit2.Response;
 
 import java.io.IOException;
 
-public final class RxUtils {
+public final class RetrofitUtils {
     private static final String NETWORK_ERROR = "Network error";
 
-    private RxUtils() {
+    private RetrofitUtils() {
     }
 
     public static <T> SingleTransformer<Response<T>, T> unWrapResponse() {

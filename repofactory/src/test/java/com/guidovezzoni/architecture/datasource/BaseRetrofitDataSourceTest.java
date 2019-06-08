@@ -3,6 +3,7 @@ package com.guidovezzoni.architecture.datasource;
 import com.guidovezzoni.architecture.cache.TimeStampHelper;
 import com.guidovezzoni.architecture.cacheddatasource.CachedDataSource;
 import com.guidovezzoni.model.TimeStampedData;
+import com.guidovezzoni.utils.RetrofitUtils;
 import io.reactivex.Single;
 import io.reactivex.observers.TestObserver;
 import org.junit.Before;
@@ -35,14 +36,14 @@ public class BaseRetrofitDataSourceTest {
     public void setUp() {
         when(timeStampHelper.getCurrentTimeStamp()).thenReturn(TIMESTAMP);
 
-        sutSuccess = new BaseRetrofitDataSource<String, Double>(timeStampHelper) {
+        sutSuccess = new BaseRetrofitDataSource<String, Double>(timeStampHelper, RetrofitUtils.unWrapResponse()) {
             @Override
             protected Single<Response<String>> getFromEndPoint(Double params) {
                 return Single.just(Response.success(RESULT));
             }
         };
 
-        sutFail = new BaseRetrofitDataSource<String, Double>(timeStampHelper) {
+        sutFail = new BaseRetrofitDataSource<String, Double>(timeStampHelper, RetrofitUtils.unWrapResponse()) {
             @Override
             protected Single<Response<String>> getFromEndPoint(Double params) {
                 return Single.error(new Exception("Network request failed"));
