@@ -45,9 +45,6 @@ dependencies {
     implementation "io.reactivex.rxjava2:rxandroid:$RX_ANDROID_VERSION"
     implementation "io.reactivex.rxjava2:rxjava:$RX_JAVA_VERSION"
 
-    // other 3rd party
-    implementation "com.fernandocejas:arrow:$ARROW_VERSION"
-
     // test
     testImplementation "junit:junit:$JUNIT_VERSION"
     testImplementation "org.mockito:mockito-core:$MOCKITO_VERSION"
