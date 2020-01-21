@@ -33,7 +33,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     // kotlin
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$KOTLIN_VERSION"
 
     // retrofit
     implementation "com.squareup.retrofit2:retrofit:$RETROFIT_VERSION"
@@ -44,9 +44,6 @@ dependencies {
     // rx
     implementation "io.reactivex.rxjava2:rxandroid:$RX_ANDROID_VERSION"
     implementation "io.reactivex.rxjava2:rxjava:$RX_JAVA_VERSION"
-
-    // other 3rd party
-    implementation "com.fernandocejas:arrow:$ARROW_VERSION"
 
     // test
     testImplementation "junit:junit:$JUNIT_VERSION"
